@@ -233,6 +233,7 @@
     <Content Include="Models\DataContext.edmx.diagram">
       <DependentUpon>DataContext.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\DirectorioTelefonico.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />
