@@ -1,0 +1,96 @@
+@Html.DevExpress().GridView(
+    settings =>
+    {
+        // Configuración General
+        settings.Name = "GridViewPersona";
+        settings.KeyFieldName = "PersonaID";
+        settings.Width = Unit.Percentage(100);
+        settings.SettingsPager.PageSize = 4;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        // Configuración de Callbacks
+        settings.CallbackRouteValues = new { Controller = "Persona", Action = "VistaParcial" };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Persona", Action = "Adicionar" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Persona", Action = "Modificar" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Persona", Action = "Eliminar" };
+
+        // Configuración de Edición
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowEditButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowNewButtonInHeader = true;
+        settings.CommandColumn.Width = Unit.Pixel(120);
+        settings.CommandColumn.ShowClearFilterButton = true;
+
+        // Configuración de Filtro
+        settings.Settings.ShowFilterRow = true;
+        settings.Settings.ShowFilterRowMenu = true;
+
+        // Configuración de Master/Details
+        settings.SettingsDetail.ShowDetailRow = true;
+        settings.SetDetailRowTemplateContent(c =>
+        {
+            ViewContext.Writer.Write("<h2>Listado de Teléfonos</h2></br>");
+            Html.RenderAction("Index", "Telefono", new { PersonaID = DataBinder.Eval(c.DataItem, "PersonaID") });
+        });
+
+        // Configuración de Validación
+        settings.CellEditorInitialize = (s, e) =>
+        {
+            ASPxEdit editor = (ASPxEdit)e.Editor;
+            editor.ValidationSettings.Display = Display.Static;
+            editor.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithText;
+        };
+
+        // Columnas
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Fotografia";
+            c.Caption = "Fotografía";
+            c.ColumnType = MVCxGridViewColumnType.BinaryImage;
+            c.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+            c.Width = Unit.Pixel(120);
+            c.Settings.AllowAutoFilter = DefaultBoolean.False;
+
+            var properties = (MVCxBinaryImageEditProperties)c.PropertiesEdit;
+
+            properties.ImageHeight = 120;
+            properties.ImageWidth = 120;
+            properties.ImageAlign = ImageAlign.Middle;
+            properties.EnableServerResize = true;
+            properties.ImageSizeMode = ImageSizeMode.FitProportional;
+            properties.CallbackRouteValues = new { Action = "ActualizarImagen", Controller = "Persona" };
+            properties.EditingSettings.Enabled = true;
+        });
+
+        settings.Columns.Add("Nombre");
+
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "FechaNacimiento";
+            c.ColumnType = MVCxGridViewColumnType.DateEdit;
+            c.Width = Unit.Pixel(120);
+            c.CellStyle.HorizontalAlign = HorizontalAlign.Center;
+        });
+
+        // Configuración de Layout de Formulario de Edición
+        settings.EditFormLayoutProperties.ColCount = 2;
+        settings.EditFormLayoutProperties.Items.Add(i =>
+        {
+            i.ColumnName = "Fotografia";
+            i.RowSpan = 2;
+            i.ShowCaption = DefaultBoolean.False;
+            i.Width = 120;
+        });
+        settings.EditFormLayoutProperties.Items.Add("Nombre");
+        settings.EditFormLayoutProperties.Items.Add("FechaNacimiento");
+        settings.EditFormLayoutProperties.Items.AddEmptyItem(new EmptyLayoutItem());
+        settings.EditFormLayoutProperties.Items.AddCommandItem(i =>
+        {
+            i.ShowUpdateButton = true;
+            i.ShowCancelButton = true;
+            i.HorizontalAlign = FormLayoutHorizontalAlign.Right;
+        });
+
+    }).SetEditErrorText(ViewData["ErroresEdicion"] as string).Bind(Model).GetHtml()

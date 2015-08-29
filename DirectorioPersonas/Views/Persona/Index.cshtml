@@ -1,0 +1,8 @@
+﻿@model System.Collections.IEnumerable
+@{
+    ViewBag.Title = "Directorio Telefónico";
+}
+@using (Html.BeginForm())
+{
+    Html.RenderPartial("GridViewPersona", Model);
+}

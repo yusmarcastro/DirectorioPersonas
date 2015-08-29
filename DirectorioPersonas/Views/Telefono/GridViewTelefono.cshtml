@@ -1,0 +1,49 @@
+@Html.DevExpress().GridView(
+    settings =>
+    {
+        // Configuración General
+        settings.Name = "GridViewTelefono_" + ViewData["PersonaID"];
+        settings.SettingsDetail.MasterGridName = "GridViewPersona";
+        settings.KeyFieldName = "TelefonoID";
+        settings.Width = Unit.Percentage(50);
+        settings.SettingsPager.PageSize = 10;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        // Configuración de Callbacks
+        settings.CallbackRouteValues = new { Controller = "Telefono", Action = "Index", PersonaID = ViewData["PersonaID"] };
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Telefono", Action = "Adicionar", PersonaID = ViewData["PersonaID"] };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Telefono", Action = "Modificar", PersonaID = ViewData["PersonaID"] };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Telefono", Action = "Eliminar"};
+
+        // Configuración de Edición
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditForm;
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowEditButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowNewButtonInHeader = true;
+        settings.CommandColumn.Width = Unit.Pixel(120);
+        settings.CommandColumn.ShowClearFilterButton = true;
+
+        // Configuración de Filtro
+        settings.Settings.ShowFilterRow = true;
+        settings.Settings.ShowFilterRowMenu = true;
+
+        // Configuración de Validación
+        //settings.CellEditorInitialize = (s, e) =>
+        //{
+        //    ASPxEdit editor = (ASPxEdit)e.Editor;
+        //    editor.ValidationSettings.Display = Display.Static;
+        //    editor.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.ImageWithText;
+        //};
+
+        // Columnas
+        settings.Columns.Add(c =>
+        {
+            c.FieldName = "Numero";
+            c.Caption = "Número";
+            c.ColumnType = MVCxGridViewColumnType.TextBox;
+            var properties = (TextBoxProperties)c.PropertiesEdit;
+            properties.MaskSettings.Mask = "(999) 000-0000";
+        });
+
+    }).SetEditErrorText(ViewData["ErroresEdicionTelefono"] as string).Bind(Model).GetHtml()
